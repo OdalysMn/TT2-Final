@@ -1,19 +1,16 @@
 import sys
 import cv2
-import cv
-import time
-import numpy as np
 from PyQt4 import uic, QtGui, QtCore
 from camara import Camara
 from procesamiento import Procesamiento
+from db import BD
 
-class GUI:
+class Main:
     def __init__(self):
         # Cargamos la GUI desde el archivo UI.
         self.MainWindow = uic.loadUi('main.ui')
 
         self.capturing = False
-        self.mseg = 0
         self.seg = 0
         self.min = 0
         self.hrs = 0
@@ -77,14 +74,14 @@ class GUI:
 
     def contar(self):
 
-        self.seg = self.seg + 1
-        if (self.seg == 60):
+        self.seg += 1
+        if self.seg == 60:
             self.seg = 0
-            self.min = self.min + 1
-        if (self.min == 60):
+            self.min += 1
+        if self.min == 60:
             self.min = 0
-            self.hrs = self.hrs + 1
-        if (self.hrs == 24):
+            self.hrs += 1
+        if self.hrs == 24:
             self.hrs = 0
 
         self.MainWindow.lblhrs.setText(str(self.hrs))
@@ -166,6 +163,6 @@ class GUI:
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    gui = GUI()
-    gui.MainWindow.show()
+    mainClass = Main()
+    mainClass.MainWindow.show()
     app.exec_()
