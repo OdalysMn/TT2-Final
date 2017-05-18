@@ -1,28 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PlayerWindow</class>
- <widget class="QMainWindow" name="PlayerWindow">
+ <class>Player</class>
+ <widget class="QMainWindow" name="Player">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>1340</width>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Videos Analizados</string>
+   <string>Resultados</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>../resources/btn3.png</normaloff>../resources/btn3.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="lblLogoIpn">
+   <widget class="QLabel" name="lblCamOjo">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>340</y>
+      <y>50</y>
+      <width>640</width>
+      <height>480</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">Background-color: #000;</string>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblCamEscena">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>50</y>
+      <width>640</width>
+      <height>480</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">Background-color: #000;</string>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblText">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Video1. PUPILA</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblText_2">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>20</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Video2. TRAYECTORIA</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblLogoIpn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>560</y>
       <width>61</width>
       <height>81</height>
      </rect>
@@ -41,7 +111,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>340</y>
+      <y>560</y>
       <width>61</width>
       <height>81</height>
      </rect>
@@ -56,32 +126,13 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="lblFrame">
+   <widget class="QPushButton" name="btnReproducir">
     <property name="geometry">
      <rect>
-      <x>295</x>
-      <y>20</y>
-      <width>321</width>
-      <height>241</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>../resources/video.jpg</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnPlay">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>300</y>
+      <x>504</x>
+      <y>570</y>
       <width>91</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -97,13 +148,13 @@
       <normaloff>../resources/bn8.png</normaloff>../resources/bn8.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnPause">
+   <widget class="QPushButton" name="btnPausar">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>300</y>
+      <x>610</x>
+      <y>570</y>
       <width>91</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -119,13 +170,13 @@
       <normaloff>../resources/btn9.png</normaloff>../resources/btn9.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnStop">
+   <widget class="QPushButton" name="btnDetener">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>300</y>
+      <x>720</x>
+      <y>570</y>
       <width>91</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -141,26 +192,149 @@
       <normaloff>../resources/btn10.png</normaloff>../resources/btn10.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnAtras">
+   <widget class="QLabel" name="lblhrs">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>370</y>
-      <width>91</width>
-      <height>23</height>
+      <x>170</x>
+      <y>590</y>
+      <width>46</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string>Atrás</string>
+     <string>00</string>
     </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../resources/btn7.png</normaloff>../resources/btn7.png</iconset>
+   </widget>
+   <widget class="QLabel" name="lblmin">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>590</y>
+      <width>46</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>00</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblseg">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>590</y>
+      <width>46</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>00</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblhrs_2">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>590</y>
+      <width>46</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>:hrs</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblmin_2">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>590</y>
+      <width>51</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>:min</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblseg_3">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>590</y>
+      <width>51</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>:s</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblProcess">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>560</y>
+      <width>401</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
@@ -169,7 +343,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
+     <width>1340</width>
      <height>21</height>
     </rect>
    </property>

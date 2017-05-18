@@ -2,19 +2,29 @@ import sys
 import cv2
 import os
 from db import DB
+from video import Video
 from camara import Camara
 from sistema import Sistema
 from PyQt4 import uic, QtGui, QtCore
 from procesamiento import Procesamiento
 
 class Main:
-    def __init__(self,lastIdVideo):
+    def __init__(self,idVideo,idPrueba):
         # Cargamos la GUI desde el archivo UI.
         self.MainWindow = uic.loadUi('main.ui')
 
-        self.idVideo = lastIdVideo + 1
+        self.idVideo = idVideo
+        self.idPrueba = idPrueba
         self.rutaVideos = 'EyeTracking/Prueba'+str(self.idVideo)+'/Videos/'
         self.rutaFrames = 'EyeTracking/Prueba'+str(self.idVideo)+'/Frames/'
+        self.nombreVideoOjo = self.rutaVideos + 'ojo.avi'
+        self.nombreVideoEscena = self.rutaVideos + 'escena.avi'
+        self.nombreVideoPupila = self.rutaVideos + 'pupila.avi'
+        self.nombreVideoTray = self.rutaVideos + 'trayectoria.avi'
+        self.rutaFramesOjo = self.rutaFrames + 'FramesOjo/'
+        self.rutaFramesEscena = self.rutaFrames + 'FramesEscena/'
+        self.rutaFramesPupila = self.rutaFrames + 'FramesPupila/'
+        self.rutaFramesTray = self.rutaFrames + 'FramesTray/'
 
         self.capturing = False
         self.seg = 0
@@ -23,6 +33,7 @@ class Main:
         self.completed = 0
         self.camaraOjo = Camara(0)
         self.camaraEscena = Camara(2)
+        self.db = DB()
 
         self.MainWindow.lblhrs.setText("00")
         self.MainWindow.lblmin.setText("00")
@@ -95,12 +106,22 @@ class Main:
         print "iniciar grabacion ... "
         self.fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
 
-        self.nombreVideoOjo = self.rutaVideos+'ojo.avi'
-        print self.nombreVideoOjo
         self.out = cv2.VideoWriter(self.nombreVideoOjo, self.fourcc, 20.0, (640, 480))
-
-        self.nombreVideoEscena = self.rutaVideos+'escena.avi'
         self.out2 = cv2.VideoWriter(self.nombreVideoEscena, self.fourcc, 20.0, (640, 480))
+
+        self.videoOjo = Video(self.idVideo,self.nombreVideoOjo,self.rutaFramesOjo,'ojo',self.idPrueba)
+        self.videoEscena = Video(self.idVideo+1,self.nombreVideoEscena,self.rutaFramesEscena,'escena',self.idPrueba)
+
+        if self.db.insertVideo(self.videoOjo):
+            print 'Video insertado exitosamente'
+        else:
+            print 'Error al insertar video'
+
+        if self.db.insertVideo(self.videoEscena):
+            print 'Video insertado exitosamente'
+        else:
+            print 'Error al insertar video'
+
 
         self.capturing = True
         self.cronometro.start(1000)
@@ -117,16 +138,8 @@ class Main:
         self.out2 = None
 
     def analizarVideo(self):
-        self.nombreVideoOjo = self.rutaVideos + 'ojo.avi'
-        self.nombreVideoEscena = self.rutaVideos + 'escena.avi'
-        self.nombreVideoPupila = self.rutaVideos + 'pupila.avi'
-        self.nombreVideoTray = self.rutaVideos + 'trayectoria.avi'
-        self.rutaFramesOjo = self.rutaFrames + '/FramesOjo/'
-        self.rutaFramesEscena = self.rutaFrames + '/FramesEscena/'
-        self.rutaFramesPupila = self.rutaFrames + '/FramesPupila/'
-        self.rutaFramesTray = self.rutaFrames + '/FramesTray/'
 
-        self.procesa = Procesamiento()
+        self.procesa = Procesamiento(self.idVideo,self.idPrueba)
         print "inicia analizando video..."
 
         self.procesa.marcarPupilas(self.nombreVideoOjo,self.nombreVideoPupila,self.rutaFramesOjo,self.rutaFramesPupila)
@@ -139,19 +152,24 @@ class Main:
 if __name__ == "__main__":
 
     db = DB()
-    lastIdVideo = db.getTheLasIdVideo()
-    print "idVideo: ",lastIdVideo
+    lastVideo = db.getTheLastVideo()
+
+    idVideo = lastVideo.idVideo + 1
+    idPrueba = lastVideo.idPrueba + 1
+
+    print "idVideo: ",idVideo
+    print "idPrueba: ",idPrueba
 
     sistema = Sistema()
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1))
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Videos')
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames')
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesOjo')
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesEscena')
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesPupila')
-    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesTray')
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba))
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba)+'/Videos')
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba)+'/Frames')
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba)+'/Frames/FramesOjo')
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba)+'/Frames/FramesEscena')
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba)+'/Frames/FramesPupila')
+    sistema.createDirectory('EyeTracking/Prueba'+str(idPrueba)+'/Frames/FramesTray')
 
     app = QtGui.QApplication(sys.argv)
-    mainClass = Main(lastIdVideo)
+    mainClass = Main(idVideo,idPrueba)
     mainClass.MainWindow.show()
     app.exec_()

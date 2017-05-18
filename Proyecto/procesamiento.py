@@ -1,11 +1,16 @@
 import cv2
-import numpy as np
 import math
+from db import DB
+import numpy as np
+from video import Video
 
 class Procesamiento:
-    def __init__(self):
+    def __init__(self,idVideo,idPrueba):
         self.pupil_coordenates = []
         self.tray_coordenates = []
+        self.db = DB()
+        self.idVideo = idVideo
+        self.idPrueba = idPrueba
 
     def getFrames(self,videoFileRoute, framesFileRoute):
         cap = cv2.VideoCapture(videoFileRoute)
@@ -193,6 +198,14 @@ class Procesamiento:
 
         self.outPupila = None
 
+        self.videoPupila = Video(self.idVideo+2,rutaVideoGuardar,rutaFramesGuardar,'pupila',self.idPrueba)
+        if self.db.insertVideo(self.videoPupila):
+            print 'video insertado'
+        else:
+            print 'error al insertar video'
+
+
+
     def marcarTrayectoria(self, rutaVideoProcesar,rutaVideoGuardar, rutaFramesGuardarAntes, rutaFramesGuardar):
         fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
         self.outTray = cv2.VideoWriter(rutaVideoGuardar, fourcc, 20.0, (640, 480))
@@ -219,3 +232,9 @@ class Procesamiento:
             numFrame = numFrame + 1
 
         self.outTray = None
+
+        self.videoTray = Video(self.idVideo+3,rutaVideoGuardar,rutaFramesGuardar,'trayectoria',self.idPrueba)
+        if self.db.insertVideo(self.videoTray):
+            print 'video insertado'
+        else:
+            print 'error al insertar video'

@@ -8,9 +8,9 @@ class DB:
         self.db = MySQLdb.connect("localhost", "root", "", "tt2")
         self.cursor = self.db.cursor()
 
-    def getTheLasIdVideo(self):
+    def getTheLastVideo(self):
         # Preparamos el query SQL para obtener todos los empleados de la BD
-        id_Video = 1
+        video = Video(0,'','','',0)
         sql = "SELECT * FROM videos WHERE id_Video=(SELECT MAX(id_Video) FROM videos)"
 
         try:
@@ -22,11 +22,16 @@ class DB:
             print "resultados: ",resultados
 
             if len(resultados) == 0:
-                return id_Video
+                return video
             else:
                 for registro in resultados:
-                    id_Video = registro[0]
-                return id_Video
+                    video.idVideo = registro[0]
+                    video.rutaVideo = registro[1]
+                    video.rutaFrames = registro[2]
+                    video.tipoVideo = registro[3]
+                    video.idPrueba = registro[4]
+
+                return video
         except:
             print "Error: No se pudieron obtener los datos"
 
