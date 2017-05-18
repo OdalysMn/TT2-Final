@@ -8,4 +8,6 @@ class Pupila:
         self.idFrame = idFrame
         self.numberOfFrame = numberOfFrame
 
+    def strPupila(self):
+        return "%s %s %s %s %s %s" % (self.idPupila,self.coordenadaX,self.coordenadaY,self.tiempo,self.idFrame,self.numberOfFrame)
 

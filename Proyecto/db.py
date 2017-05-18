@@ -91,6 +91,23 @@ class DB:
             self.db.rollback()
             return False
 
+    def getPupil(self,idFrame):
+
+        pupil = []
+        try:
+            # Ejecutamos el comando
+            self.cursor.execute("SELECT * FROM pupila WHERE id_Frame = %s", (idFrame))
+            # Obtenemos todos los registros en una lista de listas
+            resultados = self.cursor.fetchall()
+
+            for registro in resultados:
+                p = Pupila(registro[0], registro[1], registro[2], registro[3],registro[4],registro[5])
+                pupil.append(p)
+
+            return pupil
+        except:
+
+            return pupil
 
 #video = Video(0,'C:/video1','C:/framesVideo1','pupila',1)
 frame = Frame(0,0,'C:/framesVideo1/0.jpg',0)
@@ -98,11 +115,17 @@ frame = Frame(0,0,'C:/framesVideo1/0.jpg',0)
 
 db = DB()
 
-res = db.getFrames(frame.idVideo)
+"""res = db.getFrames(frame.idVideo)
 print 'res.legth: ',len(res)
 
 for r in res:
-    print 'r: ',r.strFrame()
+    print 'r: ',r.strFrame()"""
+
+res = db.getPupil(frame.idFrame)
+print 'res.legth: ',len(res)
+
+for r in res:
+    print 'r: ',r.strPupila()
 
 """if db.insertVideo(video):
     print 'Insertado con exito'
