@@ -123,10 +123,10 @@
    <widget class="QPushButton" name="btnGrabar">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>590</y>
+      <x>520</x>
+      <y>570</y>
       <width>75</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -145,10 +145,10 @@
    <widget class="QPushButton" name="btnGuardar">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>590</y>
+      <x>610</x>
+      <y>570</y>
       <width>75</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -167,10 +167,10 @@
    <widget class="QPushButton" name="btnAnalizar">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>590</y>
+      <x>700</x>
+      <y>570</y>
       <width>75</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -184,28 +184,6 @@
     <property name="icon">
      <iconset>
       <normaloff>../resources/btn2.png</normaloff>../resources/btn2.png</iconset>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnAtras">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>590</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Atrás</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../resources/btn7.png</normaloff>../resources/btn7.png</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="lblhrs">

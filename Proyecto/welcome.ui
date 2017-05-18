@@ -78,32 +78,13 @@
      <enum>Qt::AutoText</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="lblTextMsj">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>60</y>
-      <width>301</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Por favor selecione una opción del siguiente menú:</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnGrabarPrueba">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>120</y>
+      <x>150</x>
+      <y>160</y>
       <width>121</width>
-      <height>31</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -119,57 +100,13 @@
       <normaloff>../resources/btn1.png</normaloff>../resources/btn1.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnAnalizarVideo">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>180</y>
-      <width>121</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Analizar Video</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../resources/btn2.png</normaloff>../resources/btn2.png</iconset>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnVerVideos">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>240</y>
-      <width>121</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Videos Analizados</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../resources/btn3.png</normaloff>../resources/btn3.png</iconset>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnSalir">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>300</y>
+      <x>330</x>
+      <y>160</y>
       <width>121</width>
-      <height>31</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">

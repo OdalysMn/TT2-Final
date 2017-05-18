@@ -15,7 +15,7 @@ class CrudEmpleado:
 
    def __init__(self):
 
-      self.db = MySQLdb.connect("localhost","root","","pythondb" )
+      self.db = MySQLdb.connect("localhost","root","","tt2" )
       self.cursor = self.db.cursor()
 
    def insertatEmpleado(self,empleado):
@@ -57,17 +57,21 @@ class CrudEmpleado:
 
          print "resultados: ",self.resultados
          print "resultados size: ",len(self.resultados)
+         self.cursor.close()
+         self.db.close()
 
          #print "resultados: ",self.resultados
          for registro in self.resultados:
             id_Video = registro[0]
             ruta_Video = registro[1]
-            ruta_Frames = registro[1]
+            ruta_Frames = registro[2]
             tipo_Video = registro[3]
             idPrueba = registro[4]
 
             # Imprimimos los resultados obtenidos
-            print "id_Video=%d, ruta_Video=%s, ruta_Frames=%s, tipo_Video=%d, idPrueba=%d" % (id_Video,ruta_Video, ruta_Frames, tipo_Video, idPrueba)
+            print "id_Video=%d, ruta_Video=%s, ruta_Frames=%s, tipo_Video=%s, idPrueba=%d" % (id_Video,ruta_Video, ruta_Frames, tipo_Video, idPrueba)
+
+
       except:
          print "Error: No se pudieron obtener los datos"
 
@@ -86,18 +90,18 @@ class CrudEmpleado:
          print "error al modificar"
 
 
-persona = Empleado('Salomon','Perez V',22,'M',13500)
+#persona = Empleado('Salomon','Perez V',22,'M',13500)
 #persona1 = Empleado('Maria','Castro',64,'F',22000)
 #persona2 = Empleado('Homero','Simpson',48,'M',12000)
 #persona3 = Empleado('Bob','Esponja',28,'M',16000)
 
 crud = CrudEmpleado()
-crud.insertatEmpleado(persona)
+#crud.insertatEmpleado(persona)
 """crud.insertatEmpleado(persona1)
 crud.insertatEmpleado(persona2)
 crud.insertatEmpleado(persona3)"""
 
 #crud.eliminarEmpleado(persona.apellido)
 
-#crud.traerEmpleados()
+crud.traerEmpleados()
 #crud.modificarEmpleado(persona.salario)

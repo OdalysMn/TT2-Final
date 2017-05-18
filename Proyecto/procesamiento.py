@@ -71,16 +71,16 @@ class Procesamiento:
         frame = cv2.flip(image, 1)
 
         crop_img = frame[140:340, 200:440]
-        cv2.imshow('cropped', crop_img)
+        #cv2.imshow('cropped', crop_img)
 
         gray = cv2.cvtColor(crop_img, cv2.cv.CV_BGR2GRAY)
         gray = cv2.medianBlur(gray, 3)
         # gray = (255-gray)
-        cv2.imshow('gray', gray)
+        #cv2.imshow('gray', gray)
 
         retval, thresholded = cv2.threshold(gray, 80, 255, cv2.THRESH_BINARY)
 
-        cv2.imshow('thresholded', thresholded)
+        #cv2.imshow('thresholded', thresholded)
 
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
         closed = cv2.erode(cv2.dilate(thresholded, kernel, iterations=1), kernel, iterations=1)
@@ -149,8 +149,8 @@ class Procesamiento:
         print 'centers: ', centers
 
         drawing[140:340, 200:440] = drawing_crop
-        cv2.imshow('drawing', drawing)
-        cv2.imshow('drawing_crop', drawing_crop)
+        #cv2.imshow('drawing', drawing)
+        #cv2.imshow('drawing_crop', drawing_crop)
 
         return drawing
 
@@ -180,7 +180,7 @@ class Procesamiento:
         while (numFrame < totalFrames):
             name = rutaFramesGuardarAntes + str(numFrame) + '.jpg'
 
-            pupilImage = self.detecPupil(name)
+            pupilImage = self.detecPupil(name,numFrame)
 
             cv2.imwrite(rutaFramesGuardar + "%d.jpg" % numFrame, pupilImage)  # save frame as JPEG file
             numFrame += 1

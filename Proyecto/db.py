@@ -19,10 +19,12 @@ class DB:
             # Obtenemos todos los registros en una lista de listas
             resultados = self.cursor.fetchall()
 
+            print "resultados: ",resultados
+
             if len(resultados) == 0:
                 return id_Video
             else:
-                for registro in self.resultados:
+                for registro in resultados:
                     id_Video = registro[0]
                 return id_Video
         except:
@@ -109,17 +111,23 @@ class DB:
 
             return pupil
 
-#video = Video(0,'C:/video1','C:/framesVideo1','pupila',1)
+"""db = DB()
+
+id = db.getTheLasIdVideo()
+
+print "id: ",id
+
+video = Video(0,'C:/video1','C:/framesVideo1','pupila',1)
 frame = Frame(0,0,'C:/framesVideo1/0.jpg',0)
-#pupila = Pupila(1,258,369,1.5,0,0)
+pupila = Pupila(1,258,369,1.5,0,0)
 
 db = DB()
 
-"""res = db.getFrames(frame.idVideo)
+res = db.getFrames(frame.idVideo)
 print 'res.legth: ',len(res)
 
 for r in res:
-    print 'r: ',r.strFrame()"""
+    print 'r: ',r.strFrame()
 
 res = db.getPupil(frame.idFrame)
 print 'res.legth: ',len(res)
@@ -127,7 +135,7 @@ print 'res.legth: ',len(res)
 for r in res:
     print 'r: ',r.strPupila()
 
-"""if db.insertVideo(video):
+if db.insertVideo(video):
     print 'Insertado con exito'
 else:
     print 'Error al insertar'

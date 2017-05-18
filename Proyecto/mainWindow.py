@@ -1,32 +1,33 @@
 import sys
 import cv2
-from PyQt4 import uic, QtGui, QtCore
+import os
+from db import DB
 from camara import Camara
+from sistema import Sistema
+from PyQt4 import uic, QtGui, QtCore
 from procesamiento import Procesamiento
-from db import BD
 
 class Main:
-    def __init__(self):
+    def __init__(self,lastIdVideo):
         # Cargamos la GUI desde el archivo UI.
         self.MainWindow = uic.loadUi('main.ui')
+
+        self.idVideo = lastIdVideo + 1
+        self.rutaVideos = 'EyeTracking/Prueba'+str(self.idVideo)+'/Videos/'
+        self.rutaFrames = 'EyeTracking/Prueba'+str(self.idVideo)+'/Frames/'
 
         self.capturing = False
         self.seg = 0
         self.min = 0
         self.hrs = 0
         self.completed = 0
-        self.center_points = []
+        self.camaraOjo = Camara(0)
+        self.camaraEscena = Camara(2)
 
         self.MainWindow.lblhrs.setText("00")
         self.MainWindow.lblmin.setText("00")
         self.MainWindow.lblseg.setText("00")
 
-        self.camaraOjo = Camara(0)
-        self.camaraEscena = Camara(2)
-        """self.grabacionOjo = Grabacion(self.camaraOjo,'ojo1.avi',20.0,640,480)
-        self.grabacionEscena = Grabacion(self.camaraEscena,'escena1.avi',20.0,640,480)"""
-
-        self.MainWindow.btnAtras.clicked.connect(self.volver)
         self.MainWindow.btnGrabar.clicked.connect(self.iniciarGrabacion)
         self.MainWindow.btnGuardar.clicked.connect(self.terminarGrabacion)
         self.MainWindow.btnAnalizar.clicked.connect(self.analizarVideo)
@@ -90,17 +91,17 @@ class Main:
 
         print self.hrs, ": ", self.min, ": ", self.seg
 
-    def volver(self):
-        # self.newWindow = Welcome()
-        # self.newWindow.WelcomeWindow.show()
-        self.MainWindow.close()
-        print 'LOL ATRAS'
-
     def iniciarGrabacion(self):
         print "iniciar grabacion ... "
         self.fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
-        self.out = cv2.VideoWriter("Videos/ojo1.avi", self.fourcc, 20.0, (640, 480))
-        self.out2 = cv2.VideoWriter("Videos/escena1.avi", self.fourcc, 20.0, (640, 480))
+
+        self.nombreVideoOjo = self.rutaVideos+'ojo.avi'
+        print self.nombreVideoOjo
+        self.out = cv2.VideoWriter(self.nombreVideoOjo, self.fourcc, 20.0, (640, 480))
+
+        self.nombreVideoEscena = self.rutaVideos+'escena.avi'
+        self.out2 = cv2.VideoWriter(self.nombreVideoEscena, self.fourcc, 20.0, (640, 480))
+
         self.capturing = True
         self.cronometro.start(1000)
 
@@ -114,55 +115,43 @@ class Main:
         self.hrs = 0
         self.out = None
         self.out2 = None
-        #self.out.release()
-        # cv.ReleaseVideoWriter(self.out)
-        #self.out2.release()
-        # cv.ReleaseVideoWriter(self.out2)
 
     def analizarVideo(self):
-        #self.progress.start(1)
-        #self.hilo.start()
+        self.nombreVideoOjo = self.rutaVideos + 'ojo.avi'
+        self.nombreVideoEscena = self.rutaVideos + 'escena.avi'
+        self.nombreVideoPupila = self.rutaVideos + 'pupila.avi'
+        self.nombreVideoTray = self.rutaVideos + 'trayectoria.avi'
+        self.rutaFramesOjo = self.rutaFrames + '/FramesOjo/'
+        self.rutaFramesEscena = self.rutaFrames + '/FramesEscena/'
+        self.rutaFramesPupila = self.rutaFrames + '/FramesPupila/'
+        self.rutaFramesTray = self.rutaFrames + '/FramesTray/'
 
         self.procesa = Procesamiento()
         print "inicia analizando video..."
 
-        #self.MainWindow.lblProcess.setText('Extrayendo frames...')
-        self.procesa.getFrames('Videos/ojo1.avi', 'framesOjo/')
-        self.completed += 25
-        self.MainWindow.progBar.setValue(self.completed)
-
-        #self.MainWindow.lblProcess.setText('Detectando y marcando pupilas...')
-        self.procesa.marcarPupilas("Videos/pupila.avi", 'framesOjo/', "framesPupila/")
-        self.completed += 25
-        self.MainWindow.progBar.setValue(self.completed)
-
-        #self.MainWindow.lblProcess.setText('Extrayendo frames...')
-        self.procesa.getFrames('Videos/escena1.avi', 'framesEscena/')
-        self.completed += 25
-        self.MainWindow.progBar.setValue(self.completed)
-
-        #self.MainWindow.lblProcess.setText('Marcando trayectoria...')
-        self.procesa.marcarTrayectoria("Videos/trayectoria.avi", 'framesEscena/', "framesTrayectoria/")
-        self.completed += 25
-        self.MainWindow.progBar.setValue(self.completed)
-
-        """self.getFrames('Videos/ojo1.avi', 'framesOjo/')
-        self.marcarPupilas("Videos/pupila.avi", 'framesOjo/', "framesPupila/")
-        self.getFrames('Videos/escena1.avi', 'framesEscena/')
-        self.marcarTrayectoria("Videos/trayectoria.avi", 'framesEscena/', "framesTrayectoria/")"""
+        self.procesa.marcarPupilas(self.nombreVideoOjo,self.nombreVideoPupila,self.rutaFramesOjo,self.rutaFramesPupila)
+        self.procesa.marcarTrayectoria(self.nombreVideoEscena,self.nombreVideoTray,self.rutaFramesEscena,self.rutaFramesTray)
 
 
 
         print "termina analizando video..."
 
-
-
-        #print "center points: ", self.procesa.center_points
-        #print "center points size: ", len(self.procesa.center_points)
-
-
 if __name__ == "__main__":
+
+    db = DB()
+    lastIdVideo = db.getTheLasIdVideo()
+    print "idVideo: ",lastIdVideo
+
+    sistema = Sistema()
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1))
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Videos')
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames')
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesOjo')
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesEscena')
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesPupila')
+    sistema.createDirectory('EyeTracking/Prueba'+str(lastIdVideo+1)+'/Frames/FramesTray')
+
     app = QtGui.QApplication(sys.argv)
-    mainClass = Main()
+    mainClass = Main(lastIdVideo)
     mainClass.MainWindow.show()
     app.exec_()
