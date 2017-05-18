@@ -15,15 +15,15 @@ class CrudEmpleado:
 
    def __init__(self):
 
-      self.db = MySQLdb.connect("localhost","root","","tt2" )
+      self.db = MySQLdb.connect("localhost","root","","pythondb" )
       self.cursor = self.db.cursor()
 
    def insertatEmpleado(self,empleado):
 
+
       try:
          # Ejecutamos el comando
-         self.cursor.execute("INSERT INTO EMPLEADO (NOMBRE,APELLIDO, EDAD, SEXO, SALARIO) VALUES (%s, %s, %s, %s, %s)",
-                              (empleado.nombre,empleado.apellido,empleado.edad,empleado.sexo,empleado.salario))
+         self.cursor.execute("INSERT INTO EMPLEADO (NOMBRE,APELLIDO, EDAD, SEXO, SALARIO) VALUES (%s, %s, %s, %s, %s)",(empleado.nombre,empleado.apellido,empleado.edad,empleado.sexo,empleado.salario))
          # Efectuamos los cambios en la base de datos
          self.db.commit()
          print "insertado con exito"
@@ -86,18 +86,18 @@ class CrudEmpleado:
          print "error al modificar"
 
 
-#persona = Empleado('Odalys','Marron',24,'F',10500)
+persona = Empleado('Salomon','Perez V',22,'M',13500)
 #persona1 = Empleado('Maria','Castro',64,'F',22000)
 #persona2 = Empleado('Homero','Simpson',48,'M',12000)
 #persona3 = Empleado('Bob','Esponja',28,'M',16000)
 
 crud = CrudEmpleado()
-"""crud.insertatEmpleado(persona)
-crud.insertatEmpleado(persona1)
+crud.insertatEmpleado(persona)
+"""crud.insertatEmpleado(persona1)
 crud.insertatEmpleado(persona2)
 crud.insertatEmpleado(persona3)"""
 
 #crud.eliminarEmpleado(persona.apellido)
 
-crud.traerEmpleados()
+#crud.traerEmpleados()
 #crud.modificarEmpleado(persona.salario)
