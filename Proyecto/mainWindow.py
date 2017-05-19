@@ -15,8 +15,8 @@ class Main:
 
         self.idVideo = idVideo
         self.idPrueba = idPrueba
-        self.rutaVideos = 'EyeTracking/Prueba'+str(self.idVideo)+'/Videos/'
-        self.rutaFrames = 'EyeTracking/Prueba'+str(self.idVideo)+'/Frames/'
+        self.rutaVideos = 'EyeTracking/Prueba'+str(self.idPrueba)+'/Videos/'
+        self.rutaFrames = 'EyeTracking/Prueba'+str(self.idPrueba)+'/Frames/'
         self.nombreVideoOjo = self.rutaVideos + 'ojo.avi'
         self.nombreVideoEscena = self.rutaVideos + 'escena.avi'
         self.nombreVideoPupila = self.rutaVideos + 'pupila.avi'
@@ -105,6 +105,9 @@ class Main:
     def iniciarGrabacion(self):
         print "iniciar grabacion ... "
         self.fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
+
+        print "nombre video ojo ", self.nombreVideoOjo
+        print "nombre video ojo ", self.nombreVideoEscena
 
         self.out = cv2.VideoWriter(self.nombreVideoOjo, self.fourcc, 20.0, (640, 480))
         self.out2 = cv2.VideoWriter(self.nombreVideoEscena, self.fourcc, 20.0, (640, 480))

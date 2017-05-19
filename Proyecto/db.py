@@ -35,6 +35,60 @@ class DB:
         except:
             print "Error: No se pudieron obtener los datos"
 
+    def getTheLastFrame(self):
+        # Preparamos el query SQL para obtener todos los empleados de la BD
+        frame = Frame(0,0,'',0)
+        sql = "SELECT * FROM frames WHERE id_Frame=(SELECT MAX(id_Frame) FROM frames)"
+
+        try:
+            # Ejecutamos el comando
+            self.cursor.execute(sql)
+            # Obtenemos todos los registros en una lista de listas
+            resultados = self.cursor.fetchall()
+
+            print "resultados: ",resultados
+
+            if len(resultados) == 0:
+                return frame
+            else:
+                for registro in resultados:
+                    frame.idFrame = registro[0]
+                    frame.numberOfFrame = registro[1]
+                    frame.rutaFrame = registro[2]
+                    frame.idVideo = registro[3]
+
+                return frame
+        except:
+            print "Error: No se pudieron obtener los datos"
+
+    def getTheLastPupil(self):
+        # Preparamos el query SQL para obtener todos los empleados de la BD
+        pupil = Pupila(0,0,0,0,0,0)
+        sql = "SELECT * FROM pupila WHERE id_Pupila=(SELECT MAX(id_Pupila) FROM pupila)"
+
+        try:
+            # Ejecutamos el comando
+            self.cursor.execute(sql)
+            # Obtenemos todos los registros en una lista de listas
+            resultados = self.cursor.fetchall()
+
+            print "resultados: ",resultados
+
+            if len(resultados) == 0:
+                return pupil
+            else:
+                for registro in resultados:
+                    pupil.idPupila = registro[0]
+                    pupil.coordenadaX = registro[1]
+                    pupil.coordenadaY = registro[2]
+                    pupil.tiempo = registro[3]
+                    pupil.idFrame = registro[4]
+                    pupil.numberOfFrame = registro[5]
+
+                return pupil
+        except:
+            print "Error: No se pudieron obtener los datos"
+
     def insertVideo(self,video):
         try:
             # Ejecutamos el comando
@@ -67,7 +121,7 @@ class DB:
 
     def getFrames(self,idVideo):
 
-        frames = []
+        idFrames = []
         try:
             # Ejecutamos el comando
             self.cursor.execute("SELECT * FROM frames WHERE id_Video = %s",(idVideo))
@@ -75,13 +129,13 @@ class DB:
             resultados = self.cursor.fetchall()
 
             for registro in resultados:
-                f = Frame(registro[0],registro[1],registro[2],registro[3])
-                frames.append(f)
 
-            return frames
+                idFrames.append(registro[0])
+
+            return idFrames
         except:
 
-            return frames
+            return idFrames
 
     def insertPupila(self,pupila):
         try:
@@ -116,9 +170,9 @@ class DB:
 
             return pupil
 
-"""db = DB()
+db = DB()
 
-id = db.getTheLasIdVideo()
+"""id = db.getTheLasIdVideo()
 
 print "id: ",id
 
@@ -154,3 +208,21 @@ if db.insertPupila(pupila):
     print 'Insertado con exito'
 else:
     print 'Error al insertar'"""
+
+"""count = 0
+while count<100:
+    frame = Frame(count+1, 0, 'C:/framesVideo1/0.jpg', 7)
+    if db.insertFrame(frame):
+        print 'Insertado con exito'
+    else:
+        print 'Error al insertar'
+    count +=1
+
+db = DB()
+
+idFrames = db.getFrames(3)
+
+for idf in idFrames:
+    print "idFrame: ",idf"""
+
+

@@ -12,8 +12,6 @@ class PlayerW:
         self.rutaVideos = 'EyeTracking/Prueba'+str(idPrueba)+'/Videos/'
         self.nombreVideoPupila = self.rutaVideos + 'pupila.avi'
         self.nombreVideoTray = self.rutaVideos + 'trayectoria.avi'
-        self.videoPupila = cv2.VideoCapture(self.nombreVideoPupila)
-        self.videoTray = cv2.VideoCapture(self.nombreVideoTray)
 
         self.PlayerWindow.btnReproducir.clicked.connect(self.playVideo)
 
@@ -52,6 +50,9 @@ class PlayerW:
         self.PlayerWindow.lblCamEscena.setPixmap(QtGui.QPixmap.fromImage(image2))
 
     def playVideo(self):
+        self.videoPupila = cv2.VideoCapture(self.nombreVideoPupila)
+        self.videoTray = cv2.VideoCapture(self.nombreVideoTray)
+
         while (self.videoPupila.isOpened()):
             ret, frame1 = self.videoPupila.read()
             ret1, frame2 = self.videoTray.read()
@@ -62,8 +63,8 @@ class PlayerW:
                 cv2.imshow('frame2', frame2)
 
                 self.show_frame(frame1,frame2)
-
-
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
             else:
                 break
 

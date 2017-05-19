@@ -3,6 +3,8 @@ import math
 from db import DB
 import numpy as np
 from video import Video
+from frame import Frame
+from pupila import Pupila
 
 class Procesamiento:
     def __init__(self,idVideo,idPrueba):
@@ -12,9 +14,12 @@ class Procesamiento:
         self.idVideo = idVideo
         self.idPrueba = idPrueba
 
-    def getFrames(self,videoFileRoute, framesFileRoute):
+    def getFrames(self,videoFileRoute, framesFileRoute,idVideo):
         cap = cv2.VideoCapture(videoFileRoute)
         totalFrames = 0
+        lastFrame = self.db.getTheLastFrame()
+        idFrame = lastFrame.idFrame + 1
+        print "idFrame: ",idFrame
 
         while (cap.isOpened()):
 
@@ -23,6 +28,14 @@ class Procesamiento:
 
                 # write the frame
                 cv2.imwrite(framesFileRoute + "%d.jpg" % totalFrames, frame)  # save frame as JPEG file
+                print "id Frame: ",idFrame+totalFrames
+                f = Frame(idFrame+totalFrames,totalFrames,framesFileRoute + "%d.jpg" % totalFrames,idVideo)
+                print "frame: ",f.strFrame()
+                if self.db.insertFrame(f):
+                    print "frame registrado"
+                else:
+                    print "frame no registrado"
+
                 totalFrames += 1
                 print totalFrames
 
@@ -119,7 +132,7 @@ class Procesamiento:
                 centers.append(center)
                 print "center: ", center
 
-        # print "number of frame: ",numberOfFrame
+        print "number of frame: ",numberOfFrame
 
         if len(centers) > 1:
             distances = []
@@ -179,8 +192,15 @@ class Procesamiento:
     def marcarPupilas(self,rutaVideoProcesar,rutaVideoGuardar, rutaFramesGuardarAntes, rutaFramesGuardar):
         fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
         self.outPupila = cv2.VideoWriter(rutaVideoGuardar, fourcc, 20.0, (640, 480))
+
+        self.videoPupila = Video(self.idVideo + 2, rutaVideoGuardar, rutaFramesGuardar, 'pupila', self.idPrueba)
+        if self.db.insertVideo(self.videoPupila):
+            print 'video insertado'
+        else:
+            print 'error al insertar video'
+
         numFrame = 0
-        totalFrames = self.getFrames(rutaVideoProcesar,rutaFramesGuardarAntes)
+        totalFrames = self.getFrames(rutaVideoProcesar,rutaFramesGuardarAntes,self.idVideo+2)
 
         while (numFrame < totalFrames):
             name = rutaFramesGuardarAntes + str(numFrame) + '.jpg'
@@ -198,21 +218,43 @@ class Procesamiento:
 
         self.outPupila = None
 
-        self.videoPupila = Video(self.idVideo+2,rutaVideoGuardar,rutaFramesGuardar,'pupila',self.idPrueba)
-        if self.db.insertVideo(self.videoPupila):
-            print 'video insertado'
-        else:
-            print 'error al insertar video'
+
 
 
 
     def marcarTrayectoria(self, rutaVideoProcesar,rutaVideoGuardar, rutaFramesGuardarAntes, rutaFramesGuardar):
         fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
         self.outTray = cv2.VideoWriter(rutaVideoGuardar, fourcc, 20.0, (640, 480))
+
+        self.videoTray = Video(self.idVideo + 3, rutaVideoGuardar, rutaFramesGuardar, 'trayectoria', self.idPrueba)
+        if self.db.insertVideo(self.videoTray):
+            print 'video insertado'
+        else:
+            print 'error al insertar video'
+
         numFrame = 0
-        totalFrames = self.getFrames(rutaVideoProcesar,rutaFramesGuardarAntes)
+        totalFrames = self.getFrames(rutaVideoProcesar,rutaFramesGuardarAntes,self.idVideo+3)
+
+        lastPupil = self.db.getTheLastPupil()
+        idPupil = lastPupil.idPupila + 1
+        print "idPupil: ",idPupil
+
+        idFrames = self.db.getFrames(self.idVideo+2)
+
         for p in self.pupil_coordenates:
-            self.tray_coordenates.append(self.escalarCoordinatesTrayectori(p))
+            coordenadasEscaladas = self.escalarCoordinatesTrayectori(p)
+
+            lista = list(coordenadasEscaladas)
+            pupila = Pupila(idPupil,lista[0],lista[1],0,idFrames[0],self.pupil_coordenates.index(p))
+            if self.db.insertPupila(pupila):
+                print "pupila insertada"
+            else:
+                print "pupila no insertada"
+
+            self.tray_coordenates.append(coordenadasEscaladas)
+
+            idPupil +=1
+            idFrames[0] +=1
 
         while numFrame < totalFrames:
 
@@ -233,8 +275,4 @@ class Procesamiento:
 
         self.outTray = None
 
-        self.videoTray = Video(self.idVideo+3,rutaVideoGuardar,rutaFramesGuardar,'trayectoria',self.idPrueba)
-        if self.db.insertVideo(self.videoTray):
-            print 'video insertado'
-        else:
-            print 'error al insertar video'
+
