@@ -81,7 +81,7 @@ class Procesamiento:
         if min >= 60.0:
             min = 0
 
-        return str(hr)+'hrs:'+str(min)+'min:'+str(s)+'s'
+        return str(hr)+' hrs: '+str(min)+ ' min: '+str(s)+' s'
 
     def detecPupil(self,name,numberOfFrame):
         centers = []
