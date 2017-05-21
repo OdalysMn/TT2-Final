@@ -14,12 +14,10 @@ class Procesamiento:
         self.idVideo = idVideo
         self.idPrueba = idPrueba
 
+
     def getFrames(self,videoFileRoute, framesFileRoute,idVideo):
         cap = cv2.VideoCapture(videoFileRoute)
         totalFrames = 0
-        lastFrame = self.db.getTheLastFrame()
-        idFrame = lastFrame.idFrame + 1
-        print "idFrame: ",idFrame
 
         while (cap.isOpened()):
 
@@ -28,14 +26,6 @@ class Procesamiento:
 
                 # write the frame
                 cv2.imwrite(framesFileRoute + "%d.jpg" % totalFrames, frame)  # save frame as JPEG file
-                print "id Frame: ",idFrame+totalFrames
-                f = Frame(idFrame+totalFrames,totalFrames,framesFileRoute + "%d.jpg" % totalFrames,idVideo)
-                print "frame: ",f.strFrame()
-                if self.db.insertFrame(f):
-                    print "frame registrado"
-                else:
-                    print "frame no registrado"
-
                 totalFrames += 1
                 print totalFrames
 
@@ -81,6 +71,17 @@ class Procesamiento:
         newT = tuple(lst)
 
         return newT
+
+    def CalcularTiempo(self,s):
+        min = round(((s*1)/60),0)
+        hr = round(((s*1)/3600),0)
+
+        if s >= 60.0:
+            s = 0
+        if min >= 60.0:
+            min = 0
+
+        return str(hr)+'hrs:'+str(min)+'min:'+str(s)+'s'
 
     def detecPupil(self,name,numberOfFrame):
         centers = []
@@ -178,14 +179,14 @@ class Procesamiento:
         line_coordinates = []
 
         for point in points:
-            cv2.circle(image, tuple(point), 4, 255, 2)
+            cv2.circle(image, tuple(point), 4, 255, -1)
             # font = cv2.FONT_HERSHEY_SIMPLEX
             # cv2.putText(image, str(points.index(point)), tuple(point), font, 1, (255, 255, 255), 1, 255)
-            # line_coordinates.append(tuple(point))
+            line_coordinates.append(tuple(point))
 
-        # for t in range(len(line_coordinates) - 1):
+        for t in range(len(line_coordinates) - 1):
 
-        #    cv2.line(image, line_coordinates[t], line_coordinates[t + 1], 255, 1)
+            cv2.line(image, line_coordinates[t], line_coordinates[t + 1], 255, 1)
 
         return image
 
@@ -194,6 +195,7 @@ class Procesamiento:
         self.outPupila = cv2.VideoWriter(rutaVideoGuardar, fourcc, 20.0, (640, 480))
 
         self.videoPupila = Video(self.idVideo + 2, rutaVideoGuardar, rutaFramesGuardar, 'pupila', self.idPrueba)
+
         if self.db.insertVideo(self.videoPupila):
             print 'video insertado'
         else:
@@ -201,13 +203,20 @@ class Procesamiento:
 
         numFrame = 0
         totalFrames = self.getFrames(rutaVideoProcesar,rutaFramesGuardarAntes,self.idVideo+2)
+        self.fileNamePupil = open('EyeTracking/Prueba' + str(self.idPrueba) + '/pupila.txt', 'wb')
 
         while (numFrame < totalFrames):
             name = rutaFramesGuardarAntes + str(numFrame) + '.jpg'
 
             pupilImage = self.detecPupil(name,numFrame)
+            print "pupil_coordenates: ",self.pupil_coordenates
+            lista= list(self.pupil_coordenates[len(self.pupil_coordenates)-1])
 
             cv2.imwrite(rutaFramesGuardar + "%d.jpg" % numFrame, pupilImage)  # save frame as JPEG file
+
+            linea = str(numFrame)+','+str(lista[0])+','+str(lista[1])+','+self.CalcularTiempo(numFrame/20.0)+','+rutaFramesGuardar + "%d.jpg" % numFrame+'\n'
+            self.fileNamePupil.write(linea)
+
             numFrame += 1
             print numFrame
 
@@ -217,16 +226,14 @@ class Procesamiento:
                 break
 
         self.outPupila = None
-
-
-
-
+        self.fileNamePupil.close()
 
     def marcarTrayectoria(self, rutaVideoProcesar,rutaVideoGuardar, rutaFramesGuardarAntes, rutaFramesGuardar):
         fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
         self.outTray = cv2.VideoWriter(rutaVideoGuardar, fourcc, 20.0, (640, 480))
 
         self.videoTray = Video(self.idVideo + 3, rutaVideoGuardar, rutaFramesGuardar, 'trayectoria', self.idPrueba)
+
         if self.db.insertVideo(self.videoTray):
             print 'video insertado'
         else:
@@ -234,27 +241,15 @@ class Procesamiento:
 
         numFrame = 0
         totalFrames = self.getFrames(rutaVideoProcesar,rutaFramesGuardarAntes,self.idVideo+3)
-
-        lastPupil = self.db.getTheLastPupil()
-        idPupil = lastPupil.idPupila + 1
-        print "idPupil: ",idPupil
-
-        idFrames = self.db.getFrames(self.idVideo+2)
+        self.fileNameTray = open('EyeTracking/Prueba' + str(self.idPrueba) + '/trayectoria.txt', 'wb')
 
         for p in self.pupil_coordenates:
             coordenadasEscaladas = self.escalarCoordinatesTrayectori(p)
 
             lista = list(coordenadasEscaladas)
-            pupila = Pupila(idPupil,lista[0],lista[1],0,idFrames[0],self.pupil_coordenates.index(p))
-            if self.db.insertPupila(pupila):
-                print "pupila insertada"
-            else:
-                print "pupila no insertada"
 
             self.tray_coordenates.append(coordenadasEscaladas)
-
-            idPupil +=1
-            idFrames[0] +=1
+        print "tray_coordenates: ", self.tray_coordenates
 
         while numFrame < totalFrames:
 
@@ -267,12 +262,20 @@ class Procesamiento:
                 points.append(self.tray_coordenates[count])
                 count = count + 1
 
-            pupilImage = self.drawCoordinate(rutaFramesGuardarAntes + str(numFrame) + '.jpg', points)
-            cv2.imwrite(rutaFramesGuardar + "%d.jpg" % numFrame, pupilImage)
-            self.outTray.write(pupilImage)
+            trayImage = self.drawCoordinate(rutaFramesGuardarAntes + str(numFrame) + '.jpg', points)
+
+            lista = list(self.tray_coordenates[numFrame])
+
+            cv2.imwrite(rutaFramesGuardar + "%d.jpg" % numFrame, trayImage)
+
+            linea = str(numFrame)+','+str(lista[0])+','+str(lista[1])+','+self.CalcularTiempo(numFrame/20.0)+','+ rutaFramesGuardar + "%d.jpg" % numFrame + '\n'
+            self.fileNameTray.write(linea)
+
+            self.outTray.write(trayImage)
 
             numFrame = numFrame + 1
 
         self.outTray = None
+        self.fileNameTray.close()
 
 
