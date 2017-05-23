@@ -163,14 +163,14 @@
      </font>
     </property>
     <property name="text">
-     <string>Pausar</string>
+     <string>Detener</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../resources/btn9.png</normaloff>../resources/btn9.png</iconset>
+      <normaloff>../resources/btn10.png</normaloff>../resources/btn10.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnDetener">
+   <widget class="QPushButton" name="btnReporte">
     <property name="geometry">
      <rect>
       <x>720</x>
@@ -185,137 +185,11 @@
      </font>
     </property>
     <property name="text">
-     <string>Detener</string>
+     <string>Reporte</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../resources/btn10.png</normaloff>../resources/btn10.png</iconset>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblhrs">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>590</y>
-      <width>46</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>00</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblmin">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>590</y>
-      <width>46</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>00</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblseg">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>590</y>
-      <width>46</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>00</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblhrs_2">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>590</y>
-      <width>46</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>:hrs</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblmin_2">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>590</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>:min</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblseg_3">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>590</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>:s</string>
+      <normaloff>../resources/btn11.ico</normaloff>../resources/btn11.ico</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="lblProcess">

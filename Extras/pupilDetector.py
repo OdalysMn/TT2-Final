@@ -77,7 +77,10 @@ def detecPupil(name,numberOfFrame):
     global pupil_coordenates
 
     image = cv2.imread(name)
-    frame = cv2.flip(image, 1)
+    frame = image
+    #frame = cv2.flip(image, 1)
+
+    cv2.imshow('invert', frame)
 
     crop_img = frame[140:340, 200:440]
     cv2.imshow('cropped', crop_img)
@@ -103,12 +106,14 @@ def detecPupil(name,numberOfFrame):
 
         area = cv2.contourArea(contour)
 
-        if area < 400:
-            continue
+        #if area < 100:
+         #   continue
 
         bounding_box = cv2.boundingRect(contour)
 
         extend = area / (bounding_box[2] * bounding_box[3])
+
+        print "extend: ",extend
 
         # reject the contours with big extend
         if extend > 0.9:
@@ -144,6 +149,22 @@ def detecPupil(name,numberOfFrame):
             cv2.circle(drawing_crop, centers[index_min_dist], 4, 255, 2)
             #cv2.circle(drawing, centers[index_min_dist], 4, 255, 2)'
             pupil_coordenates.append(centers[index_min_dist])
+        else:
+            for c in centers:
+                dist = euclidianDistance((50, 70), c)
+                distances.append(dist)
+
+            # print "distances: ",distances
+            min_dist = min(distances)
+            # print "min_value: ",min_dist
+
+            for d in distances:
+                if d == min_dist:
+                    index_min_dist = distances.index(d)
+
+            cv2.circle(drawing_crop, centers[index_min_dist], 4, 255, 2)
+            # cv2.circle(drawing, centers[index_min_dist], 4, 255, 2)'
+            pupil_coordenates.append(centers[index_min_dist])
 
     elif len(centers) == 0:
         if numberOfFrame > 0:
@@ -159,6 +180,7 @@ def detecPupil(name,numberOfFrame):
     print 'centers: ', centers
 
     drawing[140:340, 200:440] = drawing_crop
+    cv2.rectangle(drawing, (200, 140), (440, 340), (255, 0, 0), 2)
     cv2.imshow('drawing', drawing)
     cv2.imshow('drawing_crop', drawing_crop)
 
@@ -182,7 +204,7 @@ def drawCoordinate(nombre_frame, points):
     return image
 
 
-videoToProcess = 'ojo1.avi'
+videoToProcess = 'ojo.avi'
 framesFileRoute = 'frames/'
 
 totalFrames = getFrames(videoToProcess,framesFileRoute)
@@ -191,7 +213,7 @@ print "total Frames: ", totalFrames
 
 cv2.namedWindow('Pupil Detector', 1)
 fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
-out = cv2.VideoWriter('ojo2.avi', fourcc, 20.0, (640,480))
+out = cv2.VideoWriter('pupila.avi', fourcc, 20.0, (640,480))
 numFrame = 0
 
 while(numFrame < totalFrames):
@@ -219,10 +241,10 @@ for p in pupil_coordenates:
 print "transform_coordenates: ", transform_coordenates
 
 
-videoToProcess2 = 'calibracion.avi'
+videoToProcess2 = 'escena.avi'
 
 numFrame2 = 0
-out2 = cv2.VideoWriter('escena2.avi', fourcc, 20.0, (640, 480))
+out2 = cv2.VideoWriter('trayectoria.avi', fourcc, 20.0, (640, 480))
 rutaFramesLeer = 'frames2/'
 
 totalFrames2 = getFrames(videoToProcess2,rutaFramesLeer)

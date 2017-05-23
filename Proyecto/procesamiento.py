@@ -5,9 +5,12 @@ import numpy as np
 from video import Video
 from frame import Frame
 from pupila import Pupila
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 
-class Procesamiento:
-    def __init__(self,idVideo,idPrueba):
+class Procesamiento(QWidget):
+    def __init__(self,idVideo,idPrueba,parent = None):
+        QWidget.__init__(self, parent)
         self.pupil_coordenates = []
         self.tray_coordenates = []
         self.db = DB()
@@ -81,7 +84,7 @@ class Procesamiento:
         if min >= 60.0:
             min = 0
 
-        return str(hr)+' hrs: '+str(min)+ ' min: '+str(s)+' s'
+        return str(hr)+'hrs:'+str(min)+ 'min:'+str(s)+'s'
 
     def detecPupil(self,name,numberOfFrame):
         centers = []
@@ -113,8 +116,8 @@ class Procesamiento:
 
             area = cv2.contourArea(contour)
 
-            if area < 400:
-                continue
+            #if area < 400:
+            #    continue
 
             bounding_box = cv2.boundingRect(contour)
 
@@ -153,12 +156,33 @@ class Procesamiento:
                 cv2.circle(drawing_crop, centers[index_min_dist], 4, 255, 2)
                 # cv2.circle(drawing, centers[index_min_dist], 4, 255, 2)'
                 self.pupil_coordenates.append(centers[index_min_dist])
+            else:
+                for c in centers:
+                    dist = self.euclidianDistance((50,70), c)
+                    distances.append(dist)
+
+                # print "distances: ",distances
+                min_dist = min(distances)
+                # print "min_value: ",min_dist
+
+                for d in distances:
+                    if d == min_dist:
+                        index_min_dist = distances.index(d)
+
+                cv2.circle(drawing_crop, centers[index_min_dist], 4, 255, 2)
+                # cv2.circle(drawing, centers[index_min_dist], 4, 255, 2)'
+                self.pupil_coordenates.append(centers[index_min_dist])
+
 
         elif len(centers) == 0:
             if numberOfFrame > 0:
                 cv2.circle(drawing_crop, self.pupil_coordenates[numberOfFrame - 1], 4, 255, 2)
                 # cv2.circle(drawing, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
                 self.pupil_coordenates.append(self.pupil_coordenates[numberOfFrame - 1])
+            else:
+                cv2.circle(drawing_crop, (50,70), 4, 255, 2)
+                # cv2.circle(drawing, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
+                self.pupil_coordenates.append((50,70))
 
         else:
             cv2.circle(drawing_crop, centers[len(centers) - 1], 4, 255, 2)
@@ -168,6 +192,7 @@ class Procesamiento:
         print 'centers: ', centers
 
         drawing[140:340, 200:440] = drawing_crop
+        cv2.rectangle(drawing, (200, 140), (440, 340), (255, 0, 0), 2)
         #cv2.imshow('drawing', drawing)
         #cv2.imshow('drawing_crop', drawing_crop)
 
@@ -224,6 +249,8 @@ class Procesamiento:
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+
+            self.emit(SIGNAL("sendValue(PyQt_PyObject)"), {"abc": numFrame})
 
         self.outPupila = None
         self.fileNamePupil.close()

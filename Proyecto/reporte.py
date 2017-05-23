@@ -144,6 +144,7 @@ class Reporte:
 
         # PARA LINUX: os.system("evince /home/diego123/Escritorio/Formulario.pdf &")
         os.system("start AcroRD32 "+self.rutaReporte+" &")
+        self.ReporteWindow.close()
 
 
 

@@ -7,6 +7,10 @@ from camara import Camara
 from sistema import Sistema
 from PyQt4 import uic, QtGui, QtCore
 from procesamiento import Procesamiento
+from playerWindow import PlayerW
+from PyQt4.QtCore import SIGNAL,Qt
+from PyQt4.QtGui import QApplication
+import time
 
 class Main:
     def __init__(self,idVideo,idPrueba):
@@ -30,7 +34,7 @@ class Main:
         self.seg = 0
         self.min = 0
         self.hrs = 0
-        self.completed = 0
+        self.analisis = False
         self.camaraOjo = Camara(0)
         self.camaraEscena = Camara(2)
         self.db = DB()
@@ -42,7 +46,7 @@ class Main:
         self.MainWindow.btnGrabar.clicked.connect(self.iniciarGrabacion)
         self.MainWindow.btnGuardar.clicked.connect(self.terminarGrabacion)
         self.MainWindow.btnAnalizar.clicked.connect(self.analizarVideo)
-        self.MainWindow.progBar.setValue(0)
+        self.MainWindow.btnResultados.clicked.connect(self.resultados)
 
         self.timer = QtCore.QTimer(self.MainWindow)
         self.MainWindow.connect(self.timer, QtCore.SIGNAL('timeout()'), self.show_frame)
@@ -50,6 +54,12 @@ class Main:
 
         self.cronometro = QtCore.QTimer(self.MainWindow)
         self.MainWindow.connect(self.cronometro, QtCore.SIGNAL('timeout()'), self.contar)
+
+        self.MainWindow.connect(self.MainWindow, SIGNAL("sendValue(PyQt_PyObject)"), self.handleValue)
+
+    def handleValue(self, value):
+        #self.resultLabel.setText(repr(value))
+        print "value: ",value
 
     def show_frame(self):
         # Tomamos una captura desde la webcam.
@@ -142,15 +152,49 @@ class Main:
 
     def analizarVideo(self):
 
-        self.procesa = Procesamiento(self.idVideo,self.idPrueba)
+        """progress = QtGui.QProgressDialog("Analizando ...","Cancelar", 0, 100, self.MainWindow)
+        progress.setCancelButton(None)
+        progress.setWindowModality(QtCore.Qt.WindowModal)
+        progress.setAutoReset(True)
+        progress.setAutoClose(True)
+        progress.setMinimum(0)
+        progress.setMaximum(100)
+        progress.resize(400, 110)
+        progress.setWindowTitle("Analisis")
+        progress.show()"""
+        self.analisis = True
+
+        self.procesa = Procesamiento(self.idVideo, self.idPrueba)
         print "inicia analizando video..."
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        # do lengthy process
 
-        self.procesa.marcarPupilas(self.nombreVideoOjo,self.nombreVideoPupila,self.rutaFramesOjo,self.rutaFramesPupila)
-        self.procesa.marcarTrayectoria(self.nombreVideoEscena,self.nombreVideoTray,self.rutaFramesEscena,self.rutaFramesTray)
 
 
+        self.procesa.marcarPupilas(self.nombreVideoOjo, self.nombreVideoPupila, self.rutaFramesOjo,
+                                   self.rutaFramesPupila)
+        #progress.setValue(50)
+        self.procesa.marcarTrayectoria(self.nombreVideoEscena, self.nombreVideoTray, self.rutaFramesEscena,
+                                       self.rutaFramesTray)
+
+        self.analisis = False
+        QApplication.restoreOverrideCursor()
+
+        #progress.setValue(100)
 
         print "termina analizando video..."
+        # progress.setValue(0)
+        # progress.setValue(20)
+        # progress.setValue(100)
+        #progress.hide()
+
+    def resultados(self):
+        self.resultadosWindow = PlayerW(self.idPrueba)
+        self.resultadosWindow.PlayerWindow.show()
+        #self.camaraOjo.liberarCamara()
+        #self.camaraEscena.liberarCamara()
+        self.MainWindow.close()
+        app.closingDown()
 
 if __name__ == "__main__":
 
@@ -176,3 +220,4 @@ if __name__ == "__main__":
     mainClass = Main(idVideo,idPrueba)
     mainClass.MainWindow.show()
     app.exec_()
+

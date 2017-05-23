@@ -2,6 +2,7 @@ import sys
 import cv2
 from db import DB
 from player import Player
+from reporte import Reporte
 from PyQt4 import uic, QtGui, QtCore
 
 
@@ -13,9 +14,12 @@ class PlayerW:
         self.nombreVideoPupila = self.rutaVideos + 'pupila.avi'
         self.nombreVideoTray = self.rutaVideos + 'trayectoria.avi'
         self.play = False
+        self.idPrueba = idPrueba
 
         self.PlayerWindow.btnReproducir.clicked.connect(self.playVideo)
         self.PlayerWindow.btnPausar.clicked.connect(self.pauseVideo)
+        self.PlayerWindow.btnReporte.clicked.connect(self.reporte)
+
 
     def show_frame(self):
         # Tomamos una captura desde la webcam.
@@ -26,7 +30,7 @@ class PlayerW:
             ipl_image = frame1
             ipl_image2 = frame2
 
-            cv2.rectangle(ipl_image, (200, 140), (440, 340), (255, 0, 0), 2)
+            #cv2.rectangle(ipl_image, (200, 140), (440, 340), (255, 0, 0), 2)
 
             # Leemos los pixeles de la imagen(numero_de_bytes_por_pixels * ancho * alto).
             data = cv2.cvtColor(ipl_image, cv2.cv.CV_BGR2RGB)
@@ -61,6 +65,11 @@ class PlayerW:
         self.timer.stop()
         self.videoPupila.release()
         self.videoTray.release()
+
+    def reporte(self):
+        self.reporteForm = Reporte(self.idPrueba)
+        self.reporteForm.ReporteWindow.show()
+        self.PlayerWindow.close()
 
 if __name__ == "__main__":
     db = DB()
