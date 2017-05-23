@@ -321,10 +321,10 @@
    <widget class="QLabel" name="lblProcess">
     <property name="geometry">
      <rect>
-      <x>880</x>
+      <x>930</x>
       <y>560</y>
-      <width>401</width>
-      <height>16</height>
+      <width>381</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
@@ -357,6 +357,25 @@
     <property name="icon">
      <iconset>
       <normaloff>../resources/btn3.png</normaloff>../resources/btn3.png</iconset>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>580</y>
+      <width>421</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="textVisible">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>

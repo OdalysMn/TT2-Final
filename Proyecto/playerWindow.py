@@ -4,6 +4,7 @@ from db import DB
 from player import Player
 from reporte import Reporte
 from PyQt4 import uic, QtGui, QtCore
+import threading
 
 
 class PlayerW:

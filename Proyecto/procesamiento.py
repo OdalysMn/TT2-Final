@@ -8,9 +8,9 @@ from pupila import Pupila
 from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import QWidget
 
-class Procesamiento(QWidget):
-    def __init__(self,idVideo,idPrueba,parent = None):
-        QWidget.__init__(self, parent)
+class Procesamiento():
+    def __init__(self,idVideo,idPrueba):
+
         self.pupil_coordenates = []
         self.tray_coordenates = []
         self.db = DB()
@@ -249,8 +249,6 @@ class Procesamiento(QWidget):
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
-            self.emit(SIGNAL("sendValue(PyQt_PyObject)"), {"abc": numFrame})
 
         self.outPupila = None
         self.fileNamePupil.close()

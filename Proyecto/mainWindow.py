@@ -8,9 +8,41 @@ from sistema import Sistema
 from PyQt4 import uic, QtGui, QtCore
 from procesamiento import Procesamiento
 from playerWindow import PlayerW
-from PyQt4.QtCore import SIGNAL,Qt
+from PyQt4.QtCore import SIGNAL,Qt,QThread,pyqtSignal
 from PyQt4.QtGui import QApplication
 import time
+import threading
+
+
+class FuncThread(threading.Thread):
+    def __init__(self, target, *args):
+        self._target = target
+        self._args = args
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self._target(*self._args)
+
+class progressThread(QThread):
+    # QtCore.Signal(int) # or pyqtSignal(int)
+    progress_update = pyqtSignal(int)
+
+    def __init__(self):
+        QThread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        # your logic here
+        while 1:
+            maxVal = 1 # NOTE THIS CHANGED to 1 since updateProgressBar was updating the value by 1 every time
+           # self.progress_update.emit(maxVal) # self.emit(SIGNAL('PROGRESS'), maxVal)
+            self.emit(SIGNAL('PROGRESS'), maxVal)
+            print"aqui"
+            # Tell the thread to sleep for 1 second and let other things run
+            time.sleep(1)
+
 
 class Main:
     def __init__(self,idVideo,idPrueba):
@@ -55,11 +87,18 @@ class Main:
         self.cronometro = QtCore.QTimer(self.MainWindow)
         self.MainWindow.connect(self.cronometro, QtCore.SIGNAL('timeout()'), self.contar)
 
-        self.MainWindow.connect(self.MainWindow, SIGNAL("sendValue(PyQt_PyObject)"), self.handleValue)
 
-    def handleValue(self, value):
-        #self.resultLabel.setText(repr(value))
-        print "value: ",value
+        self.progress_thread = progressThread()
+
+        self.MainWindow.connect(self.progress_thread, SIGNAL('PROGRESS'), self.updateProgressBar)
+
+        #self.progress_thread.start()
+
+
+    def updateProgressBar(self, maxVal):
+        self.MainWindow.progressBar.setValue(self.MainWindow.progressBar.value() + maxVal)
+        if maxVal == 0:
+            self.MainWindow.progressBar.setValue(100)
 
     def show_frame(self):
         # Tomamos una captura desde la webcam.
@@ -163,22 +202,29 @@ class Main:
         progress.setWindowTitle("Analisis")
         progress.show()"""
         self.analisis = True
-
+        self.MainWindow.lblProcess.setText("Analizando...")
+        self.MainWindow.progressBar.setValue(20)
         self.procesa = Procesamiento(self.idVideo, self.idPrueba)
         print "inicia analizando video..."
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        # do lengthy process
+        #self.progress_thread.start()
 
-
-
-        self.procesa.marcarPupilas(self.nombreVideoOjo, self.nombreVideoPupila, self.rutaFramesOjo,
+        """self.procesa.marcarPupilas(self.nombreVideoOjo, self.nombreVideoPupila, self.rutaFramesOjo,
                                    self.rutaFramesPupila)
         #progress.setValue(50)
         self.procesa.marcarTrayectoria(self.nombreVideoEscena, self.nombreVideoTray, self.rutaFramesEscena,
-                                       self.rutaFramesTray)
+                                       self.rutaFramesTray)"""
 
+        t1 = FuncThread(self.procesa.marcarPupilas, self.nombreVideoOjo, self.nombreVideoPupila, self.rutaFramesOjo,
+                                   self.rutaFramesPupila)
+        t1.start()
+        t1.join()
+        self.MainWindow.progressBar.setValue(50)
+        t2 = FuncThread(self.procesa.marcarTrayectoria, self.nombreVideoEscena, self.nombreVideoTray, self.rutaFramesEscena,
+                                       self.rutaFramesTray)
+        t2.start()
+        t2.join()
+        self.MainWindow.progressBar.setValue(100)
         self.analisis = False
-        QApplication.restoreOverrideCursor()
 
         #progress.setValue(100)
 
@@ -195,6 +241,8 @@ class Main:
         #self.camaraEscena.liberarCamara()
         self.MainWindow.close()
         app.closingDown()
+        #self.progress_thread.start()
+
 
 if __name__ == "__main__":
 
