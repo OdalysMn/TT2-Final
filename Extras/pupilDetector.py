@@ -3,6 +3,7 @@ import numpy as np
 import math
 
 pupil_coordenates = []
+fileResults = open('pupila.txt', 'wb')
 #transform_coordenates = []
 #totalFrames = 0
 
@@ -58,11 +59,11 @@ def escalarCoordinatesTrayectori(t):
 
     lst = list(t)
 
-    lst[0] = int(round(lst[0] * 3.2, 0))
-    lst[1] = int(round(lst[1] * 3.42857142, 0))
+    #lst[0] = int(round(lst[0] * 3.2, 0))
+    #lst[1] = int(round(lst[1] * 3.42857142, 0))
 
-    #lst[0] = int(round(lst[0] * 2.666666, 0))
-    #lst[1] = int(round(lst[1] * 2.4, 0))
+    lst[0] = int(round(lst[0] * 2.666666, 0))
+    lst[1] = int(round(lst[1] * 3, 0))
 
     #lst[0] = int(round(lst[0] * 1.454545, 0))
     #lst[1] = int(round(lst[1] * 1.411764, 0))
@@ -75,14 +76,15 @@ def escalarCoordinatesTrayectori(t):
 def detecPupil(name,numberOfFrame):
     centers = []
     global pupil_coordenates
+    global fileResults
 
     image = cv2.imread(name)
-    frame = image
-    #frame = cv2.flip(image, 1)
+    #frame = image
+    frame = cv2.flip(image, 1)
 
     cv2.imshow('invert', frame)
 
-    crop_img = frame[140:340, 200:440]
+    crop_img = frame[140:300, 200:440]
     cv2.imshow('cropped', crop_img)
 
     gray = cv2.cvtColor(crop_img, cv2.cv.CV_BGR2GRAY)
@@ -113,7 +115,7 @@ def detecPupil(name,numberOfFrame):
 
         extend = area / (bounding_box[2] * bounding_box[3])
 
-        print "extend: ",extend
+        #print "extend: ",extend
 
         # reject the contours with big extend
         if extend > 0.9:
@@ -126,7 +128,7 @@ def detecPupil(name,numberOfFrame):
             center = (int(m['m10'] / m['m00']), int(m['m01'] / m['m00']))
             #center = escalarCoodinatesPupil(center)
             centers.append(center)
-            print "center: ",center
+            #print "center: ",center
 
 
     #print "number of frame: ",numberOfFrame
@@ -151,7 +153,7 @@ def detecPupil(name,numberOfFrame):
             pupil_coordenates.append(centers[index_min_dist])
         else:
             for c in centers:
-                dist = euclidianDistance((50, 70), c)
+                dist = euclidianDistance((120, 80), c)
                 distances.append(dist)
 
             # print "distances: ",distances
@@ -166,21 +168,35 @@ def detecPupil(name,numberOfFrame):
             # cv2.circle(drawing, centers[index_min_dist], 4, 255, 2)'
             pupil_coordenates.append(centers[index_min_dist])
 
+        line = str(numberOfFrame)+' ,frame: '+name+' ,pupila:SI'+'\n'
+
     elif len(centers) == 0:
         if numberOfFrame > 0:
             cv2.circle(drawing_crop, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
             #cv2.circle(drawing, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
             pupil_coordenates.append(pupil_coordenates[numberOfFrame-1])
+        else:
+            cv2.circle(drawing_crop, (120, 80), 4, 255, 2)
+            # cv2.circle(drawing, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
+            pupil_coordenates.append((120, 80))
+
+        line = str(numberOfFrame) + ' ,frame: ' + name + ' ,pupila:NO' + '\n'
 
     else:
         cv2.circle(drawing_crop, centers[len(centers)-1], 4, 255, 2)
         #cv2.circle(drawing, centers[len(centers)-1], 4, 255, 2)
         pupil_coordenates.append(centers[len(centers)-1])
+        line = str(numberOfFrame) + ' ,frame: ' + name + ' ,pupila:SI' + '\n'
+
+    fileResults.write(line)
 
     print 'centers: ', centers
 
-    drawing[140:340, 200:440] = drawing_crop
-    cv2.rectangle(drawing, (200, 140), (440, 340), (255, 0, 0), 2)
+    drawing[140:300, 200:440] = drawing_crop
+    #cv2.circle(drawing_crop, (0,0), 16, (0,255,0), -1)
+    #cv2.circle(drawing_crop, (200, 140), 16, (0,255,0), -1)
+    #cv2.circle(drawing_crop, (240, 200), 16, (0,255,0), -1)
+    cv2.rectangle(drawing, (200, 140), (440, 300), (255, 0, 0), 2)
     cv2.imshow('drawing', drawing)
     cv2.imshow('drawing_crop', drawing_crop)
 
@@ -192,14 +208,14 @@ def drawCoordinate(nombre_frame, points):
     line_coordinates = []
 
     for point in points:
-        cv2.circle(image, tuple(point), 4, 255, 2)
+        cv2.circle(image, tuple(point), 4, 255, -1)
         #font = cv2.FONT_HERSHEY_SIMPLEX
         #cv2.putText(image, str(points.index(point)), tuple(point), font, 1, (255, 255, 255), 1, 255)
-        #line_coordinates.append(tuple(point))
+        line_coordinates.append(tuple(point))
 
-    #for t in range(len(line_coordinates) - 1):
+    for t in range(len(line_coordinates) - 1):
 
-    #    cv2.line(image, line_coordinates[t], line_coordinates[t + 1], 255, 1)
+        cv2.line(image, line_coordinates[t], line_coordinates[t + 1], 255, 1)
 
     return image
 
@@ -213,7 +229,7 @@ print "total Frames: ", totalFrames
 
 cv2.namedWindow('Pupil Detector', 1)
 fourcc = cv2.cv.CV_FOURCC('i', 'Y', 'U', 'V')
-out = cv2.VideoWriter('pupila.avi', fourcc, 20.0, (640,480))
+out = cv2.VideoWriter('NoPupila.avi', fourcc, 20.0, (640,480))
 numFrame = 0
 
 while(numFrame < totalFrames):
@@ -232,7 +248,9 @@ while(numFrame < totalFrames):
         cv2.destroyWindow('Pupil Detector')
         break
 
+fileResults.close()
 print 'pupil_coordenates: ', pupil_coordenates
+print 'Pupil Detector Finish'
 
 transform_coordenates = []
 for p in pupil_coordenates:

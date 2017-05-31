@@ -110,8 +110,8 @@ class Main:
             self.out2.write(ipl_image2)
             # print "grabando frame"
 
-        cv2.rectangle(ipl_image, (200, 140), (440, 340), (255, 0, 0), 2)
-
+        cv2.rectangle(ipl_image, (200, 140), (440, 300), (255, 0, 0), 2)
+        #cv2.circle(ipl_image, (120, 80), 4, (255, 0, 0), -1)
         # Leemos los pixeles de la imagen(numero_de_bytes_por_pixels * ancho * alto).
         data = cv2.cvtColor(ipl_image, cv2.cv.CV_BGR2RGB)
         data2 = cv2.cvtColor(ipl_image2, cv2.cv.CV_BGR2RGB)
@@ -229,6 +229,13 @@ class Main:
         #progress.setValue(100)
 
         print "termina analizando video..."
+        msg = QtGui.QMessageBox()
+        msg.setIcon(QtGui.QMessageBox.Information)
+
+        msg.setText("Analisis Finalizado")
+        msg.setInformativeText("Por favor de click en el boton de Resultados")
+        msg.setWindowTitle("Atencion")
+        msg.exec_()
         # progress.setValue(0)
         # progress.setValue(20)
         # progress.setValue(100)

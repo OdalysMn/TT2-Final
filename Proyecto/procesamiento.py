@@ -68,8 +68,8 @@ class Procesamiento():
     def escalarCoordinatesTrayectori(self,t):
         lst = list(t)
 
-        lst[0] = int(round(lst[0] * 3.2, 0))
-        lst[1] = int(round(lst[1] * 3.42857142, 0))
+        lst[0] = int(round(lst[0] * 2.666666, 0))
+        lst[1] = int(round(lst[1] * 3, 0))
 
         newT = tuple(lst)
 
@@ -92,7 +92,7 @@ class Procesamiento():
         image = cv2.imread(name)
         frame = cv2.flip(image, 1)
 
-        crop_img = frame[140:340, 200:440]
+        crop_img = frame[140:300, 200:440]
         #cv2.imshow('cropped', crop_img)
 
         gray = cv2.cvtColor(crop_img, cv2.cv.CV_BGR2GRAY)
@@ -158,7 +158,7 @@ class Procesamiento():
                 self.pupil_coordenates.append(centers[index_min_dist])
             else:
                 for c in centers:
-                    dist = self.euclidianDistance((50,70), c)
+                    dist = self.euclidianDistance((120,80), c)
                     distances.append(dist)
 
                 # print "distances: ",distances
@@ -180,9 +180,9 @@ class Procesamiento():
                 # cv2.circle(drawing, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
                 self.pupil_coordenates.append(self.pupil_coordenates[numberOfFrame - 1])
             else:
-                cv2.circle(drawing_crop, (50,70), 4, 255, 2)
+                cv2.circle(drawing_crop, (120,80), 4, 255, 2)
                 # cv2.circle(drawing, pupil_coordenates[numberOfFrame-1], 4, 255, 2)
-                self.pupil_coordenates.append((50,70))
+                self.pupil_coordenates.append((120,80))
 
         else:
             cv2.circle(drawing_crop, centers[len(centers) - 1], 4, 255, 2)
@@ -191,8 +191,9 @@ class Procesamiento():
 
         print 'centers: ', centers
 
-        drawing[140:340, 200:440] = drawing_crop
-        cv2.rectangle(drawing, (200, 140), (440, 340), (255, 0, 0), 2)
+        drawing[140:300, 200:440] = drawing_crop
+        cv2.rectangle(drawing, (200, 140), (440, 300), (255, 0, 0), 2)
+
         #cv2.imshow('drawing', drawing)
         #cv2.imshow('drawing_crop', drawing_crop)
 
@@ -272,6 +273,16 @@ class Procesamiento():
             coordenadasEscaladas = self.escalarCoordinatesTrayectori(p)
 
             lista = list(coordenadasEscaladas)
+
+            """if(lista[0]>640):
+                dif = lista[0]-640
+                lista[0] = lista[0]-dif
+
+            if (lista[1] > 480):
+                dif = lista[0] - 480
+                lista[1] = lista[1] - dif"""
+
+            #coordenadasFinales = tuple(lista)
 
             self.tray_coordenates.append(coordenadasEscaladas)
         print "tray_coordenates: ", self.tray_coordenates

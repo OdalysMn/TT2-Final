@@ -26,7 +26,6 @@ class PlayerW:
         # Tomamos una captura desde la webcam.
         ret, frame1 = self.videoPupila.read()
         ret1, frame2 = self.videoTray.read()
-
         if ret:
             ipl_image = frame1
             ipl_image2 = frame2
@@ -76,7 +75,20 @@ if __name__ == "__main__":
     db = DB()
     lastVideo = db.getTheLastVideo()
 
-    idPrueba = lastVideo.idPrueba
+    #idPrueba = lastVideo.idPrueba
+    #idPrueba=26
+    #idPrueba = 29
+    #idPrueba = 64
+    idPrueba = 67
+    #idPrueba = 74
+    #idPrueba = 76
+    #idPrueba = 77
+    #idPrueba = 79
+    #idPrueba = 81
+    #idPrueba = 87
+    #idPrueba = 88
+    #idPrueba = 89
+    #idPrueba = 91
 
     print "idPrueba: ", idPrueba
 
