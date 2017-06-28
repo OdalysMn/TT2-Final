@@ -67,8 +67,8 @@ class Main:
         self.min = 0
         self.hrs = 0
         self.analisis = False
-        self.camaraOjo = Camara(0)
-        self.camaraEscena = Camara(2)
+        self.camaraOjo = Camara(2)
+        self.camaraEscena = Camara(1)
         self.db = DB()
 
         self.MainWindow.lblhrs.setText("00")
